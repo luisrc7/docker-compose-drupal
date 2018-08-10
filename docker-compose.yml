@@ -1,0 +1,31 @@
+# Main Apache Server
+web:
+  build: ./docker-config
+  container_name: d8-web
+  environment:
+    - ALLOW_OVERRIDE=true
+  ports:
+    - "8080:80"
+  volumes:
+    - .:/var/www/d8
+  links:
+    - db
+  working_dir: /var/www/d8
+  expose:
+    - "8080"
+
+# MySQL Server
+db:
+  image: percona/percona-server:5.6.35
+  container_name: d8-db
+  restart: always
+  volumes:
+    - d8-db:/var/lib/mysql
+  environment:
+    MYSQL_ROOT_PASSWORD: root
+    MYSQL_USER: dbuser
+    MYSQL_PASSWORD: dbpass
+    MYSQL_DATABASE: db
+  ports:
+    - "8889:3306"
+  user: mysql
